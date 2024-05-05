@@ -37,7 +37,6 @@ app.use(express.urlencoded({ extended: false }));
 const port = 8080;
 
 app.get('/', (req, res) => {
-    res.send(db.get('STOP'))
 	res.status(200)
 })
 
