@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { createJWT, hashPassword, comparePasswords } from '../auth/auth';
-import db from '../server'
-
+// import db from '../server'
+import db from '../moresecureserver'
 
 export const createNewUser = async (req: Request, res: Response) => {
     let existingUser;

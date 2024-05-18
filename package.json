@@ -5,7 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js"
+    "startExperimental": "node dist/server.js",
+    "start": "node dist/moresecureserver.js"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +28,9 @@
     "jsonwebtoken": "^9.0.2",
     "leveldown": "^6.1.1",
     "levelup": "^5.1.1",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
     "morgan": "^1.10.0"
   }
 }
