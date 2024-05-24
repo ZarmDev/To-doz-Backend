@@ -7,7 +7,10 @@ databases, so even if you deploy it, it won't help you.
 There is two ways to deploy this but the only way that works now is
 the "Setup - Normal" way.
 # Credits
-The code is mostly a modified version of code from the tutorial "API Design" from Frontendmasters (thanks for the course!!!)
+The code uses a significant portion of the "API Design" course code from Frontendmasters
+https://github.com/Hendrixer/api-design-v4-course
+
+I only modified it to add some changes.
 # Setup - Normal
 Add the env variables:
 Please make the SUPER_SECRET_TOKEN very long and random
