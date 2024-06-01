@@ -14,7 +14,15 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "src/moresecureserver.ts"
+            "dest": "/src/moresecureserver.ts",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS"
+            ]
         }
     ]
 }
