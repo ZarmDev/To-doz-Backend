@@ -1,8 +1,10 @@
 ﻿# To-doz-Backend
 NOTE: This is all experimental, I am just having fun so if you actually
 deploy this be careful.
-EVEN MORE IMPORTANT: To-doz-React does not currently support adding
-databases, so even if you deploy it, it won't help you.
+# Where to deploy this..?
+I recommend using Azure App Functions or Render.
+Honestly, Render is best suited and fastest for this from what I have seen.
+I would recommend Vercel, but it keeps crashing for me...
 # Different servers
 There is two ways to deploy this but the only way that works now is
 the "Setup - Normal" way.
