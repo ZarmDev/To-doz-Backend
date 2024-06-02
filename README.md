@@ -2,9 +2,7 @@
 NOTE: This is all experimental, I am just having fun so if you actually
 deploy this be careful.
 # Where to deploy this..?
-I recommend using Azure App Functions or Render.
-Honestly, Render is best suited and fastest for this from what I have seen.
-I would recommend Vercel, but it keeps crashing for me...
+You can deploy this on Render (perfect option), Microsoft Azure App Services (Only 1 hour a day), Vercel (crashes), Netlify (Need verification), Heroku (Requires card verification)
 # Different servers
 There is two ways to deploy this but the only way that works now is
 the "Setup - Normal" way.
@@ -23,9 +21,6 @@ SUPER_SECRET_TOKEN="putanyvalueyouwant"
 Don't change user.ts
 
 Deploy the server normally.
-
-# Deployment
-You can deploy this on Microsoft Azure App Services (Only 1 hour a day), Vercel (maybe? I think it doesn't work), Netlify (Need verification), Heroku (Requires card verification)
 
 # About the Experimental way (JWT tokens)
 This is meant for deploying a "production" database where there is
