@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "startExperimental": "node dist/server.js",
-    "start": "node dist/moresecureserver.js"
+    "start": "npm run build && node dist/moresecureserver.js"
   },
   "author": "",
   "license": "ISC",

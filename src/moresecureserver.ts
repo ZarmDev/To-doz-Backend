@@ -6,38 +6,58 @@ import levelup from 'levelup';
 import leveldown from 'leveldown';
 import encode from 'encoding-down';
 import { protectWithOneKey } from './auth/auth';
-import { getUserData, updateUserData } from './handlers/user';
+import { getUserData, updateUserData, updateSection } from './handlers/user';
 import * as dotenv from 'dotenv';
 // Load up the .env file FIRST, before anything else
 dotenv.config();
 const db = levelup(encode(leveldown('./db'), { valueEncoding: 'json' }));
-
+const port = process.env.PORT || 8080;
 const app = express();
 
 // Rate limiter (ai generated? i dont remember)
 const limiter = rateLimit({
 	windowMs: 120 * 60 * 1000, // 2 hours
-	max: 2000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-app.use(limiter);
+// 450 is the amount you would get contacted if you got a update data every second
+const lightLimit = rateLimit({
+	windowMs: 120 * 60 * 1000, // 2 hours
+	max: 500,
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
 
-// app.use(cors({
-//     origin: process.env.ORIGIN_SITE
-// }));
-app.use(cors());
+const allowedOrigins = [
+	'http://localhost:3000',
+	'http://localhost:3000/To-doz-React',
+	'https://zarmdev.github.io/To-doz-React/',
+];
 
-app.use(morgan('dev'));
+// Use of AI here.
+app.use(cors({
+	origin: function (origin, callback) {
+		// allow requests with no origin 
+		// (like mobile apps or curl requests)
+		if (!origin) return callback(null, true);
+		if (allowedOrigins.indexOf(origin) === -1) {
+			var msg = 'The CORS policy for this site does not ' +
+				'allow access from the specified Origin.';
+			return callback(new Error(msg), false);
+		}
+		return callback(null, true);
+	}
+}));
+
+// app.use(morgan('dev'));
 
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-const port = 8080;
-
-app.get('/', (req, res) => {
+app.get('/', limiter, (req, res) => {
 	res.send("Success!")
 	res.status(200)
 })
@@ -46,11 +66,12 @@ app.get('/', (req, res) => {
 app.use('/api', protectWithOneKey)
 
 // these routes called after /api
-app.post('/api/getdata', getUserData)
-app.post('/api/updatedata', updateUserData)
+app.post('/api/getdata', limiter, getUserData)
+app.post('/api/updatedata', lightLimit, updateUserData)
+app.post('/api/updatesection', lightLimit, updateSection)
 
 app.listen(port, () => {
-    console.log('Express server initialized on ' + String(port));
+	console.log('Express server initialized on ' + String(port));
 });
 
 export default db

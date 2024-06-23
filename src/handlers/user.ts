@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { createJWT, hashPassword, comparePasswords } from '../auth/auth';
-// import db from '../server'
 import db from '../moresecureserver'
 
 export const createNewUser = async (req: Request, res: Response) => {
@@ -23,21 +22,14 @@ export const createNewUser = async (req: Request, res: Response) => {
                     data: {}
                 })
     }
-    
-    // const user = await prisma.user.create({
-    //     data: {
-    //         username: req.body.username,
-    //         password: await hashPassword(req.body.password),
-    //     }
-    // })
 
-    // // used copilot to do this...
+    // used copilot to do this...
     const token = createJWT({
         id: req.body.username,
         username: req.body.username
     }, '1h');
 
-    // // equivalent to { token: token }
+    // equivalent to { token: token }
     res.json({ token });
 }
 
@@ -76,8 +68,7 @@ export const signin = async (req: Request, res: Response) => {
 }
 
 export const getUserData = async (req: Request, res: Response) => {
-    res.json(await db.get(req.body.username))
-    res.status(200)
+    res.status(200).json(await db.get(req.body.username))
 };
 
 export const updateUserData = async (req: Request, res: Response) => {
@@ -86,6 +77,14 @@ export const updateUserData = async (req: Request, res: Response) => {
         password: await hashPassword(req.body.password),
         data: req.body.data
     })
-    res.status(200)
-    res.send("Success.")
+    res.status(200).send("Success.")
+}
+
+export const updateSection = async (req: Request, res: Response) => {
+    // await db.del(req.body.username)
+    db.put(req.body.username, {
+        password: await hashPassword(req.body.password),
+        data: req.body.data
+    })
+    res.status(200).send("Success.")
 }

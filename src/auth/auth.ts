@@ -5,12 +5,13 @@ import { Secret } from 'jsonwebtoken';
 import { IncomingHttpHeaders } from 'http';
 import { Request, Response, NextFunction } from 'express';
 import bycrypt from 'bcrypt';
+import db from '../moresecureserver'
 
-export const comparePasswords = (password : any, hash : any) => {
+export const comparePasswords = (password: any, hash: any) => {
     return bycrypt.compare(password, hash);
 }
 
-export const hashPassword = (password : any) => {
+export const hashPassword = (password: any) => {
     // Second argument is a salt, which is a random string that is added to the password
     return bycrypt.hash(password, 5);
 }
@@ -29,13 +30,13 @@ declare global {
     }
 }
 
-export const createJWT = (user: User, time : string) => {
+export const createJWT = (user: User, time: string) => {
     const token = jwt.sign({
         id: user.id,
         username: user.username
     },
-    process.env.JWT_SECRET as Secret,
-    { expiresIn: time }
+        process.env.JWT_SECRET as Secret,
+        { expiresIn: time }
     )
     return token
 }
@@ -46,7 +47,7 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
 
     if (!bearer) {
         res.status(401)
-        res.json({message: 'not authorized'})
+        res.json({ message: 'not authorized' })
         return
     }
     // [bearer (OMITED), token]
@@ -54,7 +55,7 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
 
     if (!token) {
         res.status(401)
-        res.json({message: 'not a valid token'})
+        res.json({ message: 'not a valid token' })
         return
     }
 
@@ -64,29 +65,49 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
     } catch (e) {
         console.error(e);
         res.status(401);
-        res.json({message: 'not a valid token'});
+        res.json({ message: 'not a valid token' });
         return;
     }
 }
 
-export const protectWithOneKey = (req: Request, res: Response, next: NextFunction) => {
+export const protectWithOneKey = async (req: Request, res: Response, next: NextFunction) => {
+    // Get bearer token
     const headers = req.headers as IncomingHttpHeaders;
     const bearer = headers.authorization;
+    // Make sure it exists
     if (!bearer) {
-        res.status(401)
-        res.json({message: 'not authorized'})
+        res.status(401).json({ message: 'Unauthorized' })
         return
     }
+
+    // Split the token 
     // [bearer (OMITED), token]
     const [, token] = bearer.split(' ');
 
+    // Make sure there is a token
     if (!token) {
-        res.status(401)
-        res.json({message: 'not a valid token'})
+        res.status(401).json({ message: 'Unauthorized' })
         return
     }
 
+    // Make sure the token matches
     if (token == process.env.SUPER_SECRET_TOKEN) {
+        // Make sure the user has the correct password
+        try {
+            let user = await db.get(req.body.username);
+            const isValid = await comparePasswords(req.body.password, user["password"]);
+            if (!isValid) {
+                res.status(401).json({ message: 'Unauthorized' })
+                return
+            }
+        } catch {
+            // always be vague about error messages 😈
+            res.status(401).json({ message: 'Unauthorized' })
+            return
+        }
+        // this will only run if no return statements exit the function
         next();
+    } else {
+        res.status(401).json({ message: 'Unauthorized' })
     }
 }
