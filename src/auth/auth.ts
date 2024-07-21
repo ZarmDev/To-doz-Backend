@@ -94,7 +94,7 @@ export const protectWithOneKey = async (req: Request, res: Response, next: NextF
     if (token == process.env.SUPER_SECRET_TOKEN) {
         // Make sure the user has the correct password
         try {
-            let user = await db.get(req.body.username);
+            let user = await db.get('defaultuser');
             const isValid = await comparePasswords(req.body.password, user["password"]);
             if (!isValid) {
                 res.status(401).json({ message: 'Unauthorized' })

@@ -6,7 +6,7 @@ import levelup from 'levelup';
 import leveldown from 'leveldown';
 import encode from 'encoding-down';
 import { protectWithOneKey } from './auth/auth';
-import { getUserData, updateUserData, updateSection } from './handlers/user';
+import { getUserDataOneKey, updateUserDataOneKey } from './handlers/user';
 import * as dotenv from 'dotenv';
 // Load up the .env file FIRST, before anything else
 dotenv.config();
@@ -66,9 +66,8 @@ app.get('/', limiter, (req, res) => {
 app.use('/api', protectWithOneKey)
 
 // these routes called after /api
-app.post('/api/getdata', limiter, getUserData)
-app.post('/api/updatedata', lightLimit, updateUserData)
-app.post('/api/updatesection', lightLimit, updateSection)
+app.post('/api/getdata', limiter, getUserDataOneKey)
+app.post('/api/updatedata', lightLimit, updateUserDataOneKey)
 
 app.listen(port, () => {
 	console.log('Express server initialized on ' + String(port));

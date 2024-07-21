@@ -80,9 +80,13 @@ export const updateUserData = async (req: Request, res: Response) => {
     res.status(200).send("Success.")
 }
 
-export const updateSection = async (req: Request, res: Response) => {
-    // await db.del(req.body.username)
-    db.put(req.body.username, {
+export const getUserDataOneKey = async (req: Request, res: Response) => {
+    res.status(200).json(await db.get('defaultuser'))
+};
+
+export const updateUserDataOneKey = async (req: Request, res: Response) => {
+    await db.del('defaultuser')
+    db.put('defaultuser', {
         password: await hashPassword(req.body.password),
         data: req.body.data
     })
